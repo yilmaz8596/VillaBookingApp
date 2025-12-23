@@ -1,3 +1,6 @@
 <Solution>
-  <Project Path="VillaBookingApp/VillaBookingApp.csproj" />
+  <Project Path="VillaBookingApp.Application/VillaBookingApp.Application.csproj" />
+  <Project Path="VillaBookingApp.Domain/VillaBookingApp.Domain.csproj" />
+  <Project Path="VillaBookingApp.Infrastructure/VillaBookingApp.Infrastructure.csproj" />
+  <Project Path="VillaBookingApp/VillaBookingApp.Web.csproj" />
 </Solution>
