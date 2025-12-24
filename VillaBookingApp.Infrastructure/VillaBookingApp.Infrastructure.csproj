@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VillaBookingApp.Domain\VillaBookingApp.Domain.csproj" />
+    <ProjectReference Include="..\VillaBookingApp.Application\VillaBookingApp.Application.csproj" />
   </ItemGroup>
 
 </Project>

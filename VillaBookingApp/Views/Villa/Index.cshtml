@@ -1,0 +1,264 @@
+@model IEnumerable<Villa>
+
+@{
+    ViewData["Title"] = "Browse Villas";
+}
+
+<!-- Page Header -->
+<section class="py-5" style="background: linear-gradient(135deg, var(--primary) 0%, var(--chart-3) 100%); margin-top: 70px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center text-white">
+                <h1 class="display-4 fw-bold mb-3">Discover Luxury Villas</h1>
+                <p class="lead mb-0">Find your perfect vacation rental from our curated collection</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search and Filter Section -->
+<section class="py-4 bg-white shadow-sm sticky-top" style="top: 70px; z-index: 100;">
+    <div class="container">
+        <div class="row g-3">
+            <!-- Search Bar -->
+            <div class="col-lg-4 col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text bg-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </span>
+                    <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Search by name or location...">
+                </div>
+            </div>
+
+            <!-- Price Range Filter -->
+            <div class="col-lg-2 col-md-3 col-6">
+                <select class="form-select" id="priceFilter">
+                    <option value="">Price Range</option>
+                    <option value="0-500">$0 - $500</option>
+                    <option value="500-1000">$500 - $1,000</option>
+                    <option value="1000-2000">$1,000 - $2,000</option>
+                    <option value="2000+">$2,000+</option>
+                </select>
+            </div>
+
+            <!-- Occupancy Filter -->
+            <div class="col-lg-2 col-md-3 col-6">
+                <select class="form-select" id="occupancyFilter">
+                    <option value="">Guests</option>
+                    <option value="1-2">1-2 Guests</option>
+                    <option value="3-4">3-4 Guests</option>
+                    <option value="5-6">5-6 Guests</option>
+                    <option value="7+">7+ Guests</option>
+                </select>
+            </div>
+
+            <!-- Size Filter -->
+            <div class="col-lg-2 col-md-3 col-6">
+                <select class="form-select" id="sizeFilter">
+                    <option value="">Size (sqft)</option>
+                    <option value="0-1000">< 1,000 sqft</option>
+                    <option value="1000-2000">1,000 - 2,000</option>
+                    <option value="2000-3000">2,000 - 3,000</option>
+                    <option value="3000+">3,000+ sqft</option>
+                </select>
+            </div>
+
+            <!-- Sort By -->
+            <div class="col-lg-2 col-md-3 col-6">
+                <select class="form-select" id="sortFilter">
+                    <option value="">Sort By</option>
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                    <option value="size-desc">Size: Largest First</option>
+                    <option value="occupancy-desc">Occupancy: Most Guests</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Active Filters Display -->
+        <div class="row mt-3" id="activeFilters" style="display: none;">
+            <div class="col-12">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <span class="text-muted small">Active Filters:</span>
+                    <div id="filterTags" class="d-flex gap-2 flex-wrap"></div>
+                    <button class="btn btn-sm btn-link text-danger" id="clearFilters">Clear All</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Villas Grid Section -->
+<section class="py-5" style="background: var(--background);">
+    <div class="container">
+        <!-- Results Count -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <p class="text-muted mb-0">
+                    <span id="resultsCount">@Model.Count()</span> villas found
+                </p>
+            </div>
+        </div>
+
+        <!-- Villas Grid -->
+        <div class="row g-4" id="villasGrid">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var villa in Model)
+                {
+                    <div class="col-lg-4 col-md-6 villa-card-wrapper" 
+                         data-name="@villa.Name.ToLower()" 
+                         data-price="@villa.Price" 
+                         data-occupancy="@villa.Occupancy" 
+                         data-sqft="@villa.Sqft">
+                        <div class="card h-100 border-0 shadow-sm villa-card" style="transition: all 0.3s ease;">
+                            <!-- Villa Image -->
+                            <div class="position-relative" style="height: 280px; overflow: hidden;">
+                                @if (!string.IsNullOrEmpty(villa.ImageUrl))
+                                {
+                                    <img src="@villa.ImageUrl" class="card-img-top h-100 w-100" style="object-fit: cover;" alt="@villa.Name">
+                                }
+                                else
+                                {
+                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: var(--muted);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" stroke-width="1.5">
+                                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                                        </svg>
+                                    </div>
+                                }
+                                
+                                <!-- Price Badge -->
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <span class="badge px-3 py-2 fs-6 fw-bold" style="background: var(--primary); border-radius: var(--radius-lg);">
+                                        $@villa.Price.ToString("N0")/night
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Villa Details -->
+                            <div class="card-body p-4">
+                                <h5 class="card-title fw-bold mb-3">@villa.Name</h5>
+                                
+                                @if (!string.IsNullOrEmpty(villa.Description))
+                                {
+                                    <p class="card-text text-muted mb-3" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                        @villa.Description
+                                    </p>
+                                }
+
+                                <!-- Villa Features -->
+                                <div class="d-flex gap-3 mb-3 flex-wrap">
+                                    <!-- Occupancy -->
+                                    <div class="d-flex align-items-center gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2">
+                                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="9" cy="7" r="4"></circle>
+                                            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                        </svg>
+                                        <span class="small text-muted">@villa.Occupancy Guests</span>
+                                    </div>
+
+                                    <!-- Size -->
+                                    <div class="d-flex align-items-center gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="3" y1="9" x2="21" y2="9"></line>
+                                            <line x1="9" y1="21" x2="9" y2="9"></line>
+                                        </svg>
+                                        <span class="small text-muted">@villa.Sqft.ToString("N0") sqft</span>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="d-grid gap-2">
+                                    <a asp-action="Details" asp-controller="Villa" 
+                                       asp-route-villaId="@villa.Id"
+                                       class="btn btn-outline-primary fw-semibold">
+                                        View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <!-- No Villas Message -->
+                <div class="col-12">
+                    <div class="text-center py-5">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" stroke-width="1.5" class="mb-3">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        <h4 class="text-muted">No villas available</h4>
+                        <p class="text-muted">Check back soon for new listings!</p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- No Results Message (Hidden by default) -->
+        <div class="row" id="noResults" style="display: none;">
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" stroke-width="1.5" class="mb-3">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <h4 class="text-muted">No villas match your filters</h4>
+                    <p class="text-muted">Try adjusting your search criteria</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // This is placeholder JavaScript structure
+        // The actual filtering logic would be implemented here
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const priceFilter = document.getElementById('priceFilter');
+            const occupancyFilter = document.getElementById('occupancyFilter');
+            const sizeFilter = document.getElementById('sizeFilter');
+            const sortFilter = document.getElementById('sortFilter');
+            
+            // Add event listeners for filters
+            // Implementation would go here
+            
+            console.log('Villa filters initialized');
+        });
+    </script>
+}
+
+<style>
+    .villa-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-xl) !important;
+    }
+
+    .villa-card img {
+        transition: transform 0.5s ease;
+    }
+
+    .villa-card:hover img {
+        transform: scale(1.05);
+    }
+
+    .sticky-top {
+        position: sticky;
+    }
+
+    @@media (max-width: 768px) {
+        .sticky-top {
+            position: relative;
+            top: 0 !important;
+        }
+    }
+</style>

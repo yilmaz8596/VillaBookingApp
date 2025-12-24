@@ -1,8 +1,10 @@
-
+﻿
 
 
 using Microsoft.EntityFrameworkCore;
+using VillaBookingApp.Application.Common.Interfaces;
 using VillaBookingApp.Infrastructure.Data;
+using VillaBookingApp.Infrastructure.Repositories;
 using VillaBookingApp.Infrastructure.Seeder;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,8 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddScoped<IVillaRepository,VillaRepository>();
 
 var app = builder.Build();
 
@@ -40,12 +44,16 @@ catch (Exception ex)
 }
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    app.UseDeveloperExceptionPage();
 }
+else
+{
+    app.UseExceptionHandler("/Error");
+}
+
+
 
 app.UseHttpsRedirection();
 app.UseRouting();
