@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.Linq.Expressions;
-using System.Text;
-using VillaBookingApp.Domain.Entities;
+
 
 namespace VillaBookingApp.Application.Common.Interfaces
 {

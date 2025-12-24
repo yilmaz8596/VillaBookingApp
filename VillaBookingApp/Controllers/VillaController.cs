@@ -4,12 +4,12 @@ using VillaBookingApp.Domain.Entities;
 
 namespace VillaBookingApp.Web.Controllers
 {
-    public class VillaController(IVillaRepository villaRepository) : Controller
+    public class VillaController(IUnitOfWork unitOfWork) : Controller
     {
-        private readonly IVillaRepository _villaRepository = villaRepository;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
         public IActionResult Index()
         {
-            var villas = _villaRepository.GetAll(null);  
+            var villas = _unitOfWork.Villa.GetAll(null);  
             return View(villas);
         }
 
@@ -21,12 +21,12 @@ namespace VillaBookingApp.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            Villa? villa = _villaRepository.Get(u => u.Id == villaId);
+            Villa? villa = _unitOfWork.Villa.Get(u => u.Id == villaId);
 
             if (villa == null)
             {
                 TempData["error"] = $"Villa with ID {villaId} not found";
-                return RedirectToAction("Index");  // ← Redirect to villa list, not error page
+                return RedirectToAction("Error","Home"); 
             }
 
             return View("Details/Index", villa);
@@ -47,8 +47,8 @@ namespace VillaBookingApp.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                _villaRepository.Add(obj);
-                _villaRepository.Save();
+                _unitOfWork.Villa.Add(obj);
+                _unitOfWork.Save();
                 TempData["success"] = "Villa created successfully";
                 return RedirectToAction("Index");
             }
@@ -61,7 +61,7 @@ namespace VillaBookingApp.Web.Controllers
             {
                 return NotFound();
             }
-            var villaFromDb = _villaRepository.Get(u => u.Id == id);
+            var villaFromDb = _unitOfWork.Villa.Get(u => u.Id == id);
             if (villaFromDb == null)
             {
                 return RedirectToAction("Error", "Home");
@@ -72,20 +72,20 @@ namespace VillaBookingApp.Web.Controllers
         [HttpDelete]
         public IActionResult Delete(Villa obj)
         {
-            Villa? objFromDb = _villaRepository.Get(u => u.Id == obj.Id);
+            Villa? objFromDb = _unitOfWork.Villa.Get(u => u.Id == obj.Id);
             if (objFromDb == null)
             {
                 return NotFound();
             }
-            _villaRepository.Remove(obj);
-            _villaRepository.Save();
+            _unitOfWork.Villa.Remove(obj);
+            _unitOfWork.Save();
             TempData["success"] = "Villa deleted successfully";
             return RedirectToAction("Index");
         }
 
         public IActionResult Update(int? villaId)
         {
-            Villa? obj = _villaRepository.Get(u => u.Id == villaId);
+            Villa? obj = _unitOfWork.Villa.Get(u => u.Id == villaId);
 
             if (obj == null)
             {
@@ -106,8 +106,8 @@ namespace VillaBookingApp.Web.Controllers
             }
             if (ModelState.IsValid)
             {
-                _villaRepository.Update(obj);
-                _villaRepository.Save();
+                _unitOfWork.Villa.Update(obj);
+                _unitOfWork.Save();
                 TempData["success"] = "Villa updated successfully";
                 return RedirectToAction("Index");
             }
