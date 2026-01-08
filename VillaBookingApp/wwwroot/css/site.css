@@ -155,3 +155,39 @@
     --shadow-xl: var(--shadow-xl);
     --shadow-2xl: var(--shadow-2xl);
 }
+
+/* Navbar link hover effect: centered underline on desktop only, color change on mobile */
+.nav-link {
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--primary) !important;
+}
+
+/* Desktop only: show animated underline */
+@media (min-width: 992px) {
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background-color: var(--primary);
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+    }
+
+    .nav-link:hover::after {
+        width: 60%;
+    }
+}
+
+/* Mobile: no underline effect, just color change */
+@media (max-width: 991px) {
+    .nav-link::after {
+        display: none;
+    }
+}

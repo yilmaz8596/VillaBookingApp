@@ -1,3 +1,5 @@
+@model VillaBookingApp.Web.ViewModels.RegisterVM
+
 @{
     ViewData["Title"] = "Register";
     Layout = "_AuthLayout";
@@ -22,42 +24,44 @@
                         </div>
 
                         <!-- Register Form -->
-                        <form>
-                            <div class="row g-3">
-                                <!-- First Name -->
-                                <div class="col-md-6">
-                                    <label for="firstName" class="form-label fw-semibold">First Name</label>
-                                    <input type="text" class="form-control" id="firstName" placeholder="John">
-                                </div>
+                        <form method="post">
+                            @Html.AntiForgeryToken()
+                            <div asp-validation-summary="All" class="text-danger"></div>
 
-                                <!-- Last Name -->
-                                <div class="col-md-6">
-                                    <label for="lastName" class="form-label fw-semibold">Last Name</label>
-                                    <input type="text" class="form-control" id="lastName" placeholder="Doe">
+                            <div class="row g-3">
+                                <!-- Name -->
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Name</label>
+                                    <input asp-for="Name" type="text" class="form-control" placeholder="John">
+                                    <span asp-validation-for="Name" class="text-danger"></span>
                                 </div>
 
                                 <!-- Email -->
                                 <div class="col-12">
-                                    <label for="email" class="form-label fw-semibold">Email Address</label>
-                                    <input type="email" class="form-control" id="email" placeholder="john.doe@example.com">
+                                    <label class="form-label fw-semibold">Email Address</label>
+                                    <input asp-for="Email" type="email" class="form-control" placeholder="john.doe@example.com">
+                                    <span asp-validation-for="Email" class="text-danger"></span>
                                 </div>
 
                                 <!-- Phone Number -->
                                 <div class="col-12">
-                                    <label for="phone" class="form-label fw-semibold">Phone Number</label>
-                                    <input type="tel" class="form-control" id="phone" placeholder="+1 (555) 000-0000">
+                                    <label class="form-label fw-semibold">Phone Number</label>
+                                    <input asp-for="PhoneNumber" type="tel" class="form-control" placeholder="+1 (555) 000-0000">
+                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                                 </div>
 
                                 <!-- Password -->
                                 <div class="col-md-6">
-                                    <label for="password" class="form-label fw-semibold">Password</label>
-                                    <input type="password" class="form-control" id="password" placeholder="••••••••">
+                                    <label class="form-label fw-semibold">Password</label>
+                                    <input asp-for="Password" type="password" class="form-control" placeholder="••••••••">
+                                    <span asp-validation-for="Password" class="text-danger"></span>
                                 </div>
 
                                 <!-- Confirm Password -->
                                 <div class="col-md-6">
-                                    <label for="confirmPassword" class="form-label fw-semibold">Confirm Password</label>
-                                    <input type="password" class="form-control" id="confirmPassword" placeholder="••••••••">
+                                    <label class="form-label fw-semibold">Confirm Password</label>
+                                    <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="••••••••">
+                                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                                 </div>
 
                                 <!-- Terms & Conditions -->
@@ -88,7 +92,7 @@
                             <div class="d-grid gap-2 mb-4">
                                 <button type="button" class="btn btn-outline-secondary">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 8px;">
-                                        <path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.702 3.702 0 0 0 1.599-2.431H8v-3.08h7.545z"/>
+                                        <path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.702 3.702 0 0 0 1.599-2.431H8v-3.08h7.545z" />
                                     </svg>
                                     Sign up with Google
                                 </button>
@@ -96,7 +100,7 @@
 
                             <!-- Login Link -->
                             <p class="text-center text-muted mb-0">
-                                Already have an account? 
+                                Already have an account?
                                 <a href="@Url.Action("Login", "Auth")" class="fw-bold text-decoration-none" style="color: var(--primary);">Sign In</a>
                             </p>
                         </form>
@@ -107,7 +111,7 @@
                 <div class="text-center mt-4">
                     <a href="@Url.Action("Index", "Home")" class="text-muted text-decoration-none">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 4px;">
-                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                            <path d="M19 12H5M12 19l-7-7 7-7" />
                         </svg>
                         Back to Home
                     </a>

@@ -1,0 +1,41 @@
+@using Microsoft.AspNetCore.Identity 
+@using VillaBookingApp.Domain.Entities
+@inject SignInManager<AppUser> SignInManager 
+@inject UserManager<AppUser> UserManager    
+
+@* Login partial for navbar. Shows user menu when signed in; shows Sign In button when anonymous. *@
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="dropdown">
+        <button class="btn btn-sm d-flex align-items-center gap-2" id="userMenuBtn" data-bs-toggle="dropdown" aria-expanded="false" style="background:transparent;border:0;">
+            <div class="d-inline-flex align-items-center justify-content-center" style="width:36px;height:36px;background:var(--primary);border-radius:8px;color:white;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </div>
+            <span class="d-none d-md-inline-block fw-semibold text-dark">@User.Identity.Name</span>
+            <span class="d-none d-lg-inline-block text-muted small">@(User.Identity?.Name)</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="userMenuBtn" style="min-width:200px;">
+            <li><a class="dropdown-item" href="@Url.Action("Index","Profile")">My Profile</a></li>
+            <li><a class="dropdown-item" href="@Url.Action("Index","Profile")#booking-history">My Bookings</a></li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+                <form asp-controller="Auth" asp-action="Logout" method="post" class="m-0">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="dropdown-item text-danger">Sign out</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+}
+else
+{
+    <div class="d-flex align-items-center gap-2">
+        <a class="btn btn-sm fw-bold px-4 py-2 btn-signin" asp-controller="Auth" asp-action="Login">
+            Sign In
+        </a>
+        <a class="btn btn-sm fw-bold px-4 py-2 text-white" style="background: var(--primary); border-radius: var(--radius);" asp-controller="Villa" asp-action="Index">
+            Book Now
+        </a>
+    </div>
+}

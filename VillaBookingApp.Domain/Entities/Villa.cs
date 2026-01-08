@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -15,5 +15,8 @@ namespace VillaBookingApp.Domain.Entities
         public string? ImageUrl { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
+
+        // Navigation for many-to-many with Amenity
+        public ICollection<Amenity> Amenities { get; set; } = new List<Amenity>();
     }
 }

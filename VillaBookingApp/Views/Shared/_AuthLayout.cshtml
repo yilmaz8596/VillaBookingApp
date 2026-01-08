@@ -1,3 +1,6 @@
+@{
+    ViewBag.IncludeToastr = true;
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,6 +36,7 @@
 
     <!-- Main Content (No container, full control in views) -->
     <main>
+        <partial name="_Notification" />
         @RenderBody()
     </main>
 
